@@ -1,0 +1,154 @@
+% resume_template.tex
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+%----------FONT OPTIONS----------
+% serif default: Times
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins to 0.5in
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.5in}
+\addtolength{\textheight}{1in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure ATS-parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands copied as-is
+\newcommand{\resumeItem}[1]{
+  \item\small
+}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%%%%%%  RESUME TEMPLATE %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape Kabirvansh Singh Chadha} \\\vspace{1pt}
+    \small 587-937-5582 $|$ \href{mailto:kabirvansh1912@gmail.com}{\underlinekabirvansh1912@gmail.com} $|$ \\
+    \href{ https://www.linkedin.com/in/kabirvansh-singh-chadha-9a8570259/}{\underlinehttps://www.linkedin.com/in/kabirvansh-singh-chadha-9a8570259/} $|$ 
+    \href{ https://github.com/Kabirvansh}{\underlinehttps://github.com/Kabirvansh}
+\end{center}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      { University of Alberta }{ September 2022 -- April 2026 }
+      { Bachelor of Science in Computing Science - Specialization }{ Edmonton, Alberta }
+  \resumeSubHeadingListEnd
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+    
+    \resumeSubheading
+      { Lead Student Instructor (LSI) }{ January 2025 -- Present }
+      { University of Alberta }{ Edmonton, Alberta }
+      \resumeItemListStart
+        
+        \resumeItem{ Guiding students in mastering advanced topics such as objects, functional programming, and Abstract Data Types (ADTs). }
+        
+        \resumeItem{ Facilitating learning of algorithms, including popular searching and sorting techniques, focusing on time and space efficiency. }
+        
+        \resumeItem{ Managed a team of TAs for course content development, resource creation, and assignment marking. }
+        
+      \resumeItemListEnd
+    
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+  \resumeSubHeadingListStart
+    
+    \resumeProjectHeading
+      { \textbf{ Compressor Station SCADA Demo } $|$ \emphIgnition, OPC UA, Wireshark, Streamlit, Python, Git }{ May 2025 }
+      \resumeItemListStart
+        
+        \resumeItem{ Designed and implemented an Ignition Vision HMI with OPC UA–backed tags for inlet/outlet pressure, compressor control, and alarm indication }
+        
+        \resumeItem{ Captured and decoded OPC UA SecureChannel traffic in Wireshark for network forensics }
+        
+        \resumeItem{ Developed a Streamlit dashboard to visualize historical pressure data, complete with interactive time-window slider }
+        
+      \resumeItemListEnd
+    
+  \resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS-----------
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+  
+  \item\small{ Python (pandas, Dash, Streamlit), SQL, JavaScript/TypeScript, C, HTML/CSS }\\
+  
+  \item\small{ Ignition Vision & OPC UA, Modbus TCP, DNP3, ModSim PLC Simulator }\\
+  
+  \item\small{ Wireshark packet analysis, OPC UA SecureChannel, ICS security fundamentals }\\
+  
+\end{itemize}
+
+%-----------CERTIFICATIONS-----------
+\section{Certifications}
+\begin{itemize}[leftmargin=0.15in, itemsep=1pt]
+  
+  \item\small{ \textbf{ Certified in Cyber Security (CC) } }\\
+  
+  \item\small{ \textbf{ JPMorgan Chase Cybersecurity Simulation } }\\
+  
+\end{itemize}
+
+%-----------AVAILABILITY-----------
+\section{Availability}
+\begin{itemize}[leftmargin=0.15in, itemsep=1pt]
+  
+  \item\small{ Available for 4, 8, or 12-month work terms, starting September 2025 }\\
+  
+\end{itemize}
+
+\end{document}
