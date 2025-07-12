@@ -1,49 +1,84 @@
 {% set ld = linkedin .replace('https://', '') .replace('http://', '')
-.replace('www.', '') .rstrip('/') %}
-<!-- added: strip protocol/www and trailing slash -->
-{% set gd = github .replace('https://', '') .replace('http://', '')
-.replace('www.', '') .rstrip('/') %}
+.replace('www.', '') .rstrip('/') %} {% set gd = github .replace('https://', '')
+.replace('http://', '') .replace('www.', '') .rstrip('/') %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Resume – {{ name }}</title>
+    <title>Resume - {{ name }}</title>
+
     <style>
-      /* Match letterpaper 0.5in margins */
+      @font-face {
+        font-family: "Latin Modern Roman";
+        src: url("{{ url_for('static', filename='fonts/lmroman10-regular.otf') }}")
+          format("opentype");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Latin Modern Roman";
+        src: url("{{ url_for('static', filename='fonts/lmroman10-bold.otf') }}")
+          format("opentype");
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "Latin Modern Roman";
+        src: url("{{ url_for('static', filename='fonts/lmroman10-italic.otf') }}")
+          format("opentype");
+        font-weight: 400;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: "Latin Modern Roman";
+        src: url("{{ url_for('static', filename='fonts/lmroman10-bolditalic.otf') }}")
+          format("opentype");
+        font-weight: 700;
+        font-style: italic;
+      }
+
+      @font-face {
+        font-family: "Computer Modern Sans";
+        src: url("{{ url_for('static', filename='fonts/computer-modern/cmunbx.ttf') }}")
+          format("truetype");
+        font-weight: bold;
+        font-style: normal;
+      }
       @page {
         size: letter;
         margin: 0.5in;
       }
       body {
-        margin: 0; /* edited or new: removed default margin */
-        padding: 0; /* edited or new: removed padding so content starts at top */
+        margin: 0;
+        padding: 0;
         font-family: "Latin Modern Roman", serif;
         line-height: 1.15;
         font-size: 11pt;
         text-align: left;
       }
       h1 {
-        font-size: 22pt;
+        font-size: 23pt;
         text-align: center;
-        margin-top: 0; /* edited or new: ensure no margin at top */
+        margin-top: 0;
         margin-bottom: 4px;
         font-variant: small-caps;
         font-weight: bold;
         letter-spacing: 1px;
       }
       .contact {
-        font-size: 9pt;
+        font-size: 10pt;
         text-align: center;
         margin-bottom: 12px;
       }
       h2.section-title {
-        font-variant: small-caps;
-        font-size: 11pt;
-        margin-top: 0;
+        font-family: "Computer Modern Sans", Arial, "Helvetica Neue", Helvetica,
+          sans-serif;
+        font-size: 12pt;
+        margin-top: 15px;
         margin-bottom: 4px;
         border-bottom: 1px solid #000;
         padding-bottom: 2px;
-        font-weight: bold;
+
         letter-spacing: 1px;
       }
       .subheading {
@@ -85,58 +120,77 @@
         color: black;
         text-decoration: none;
       }
+      .contact a.email-link {
+        text-decoration: underline;
+      }
       .contact a[href^="https://"]
       {
         text-decoration: underline;
       }
-      .contact a[href^="mailto:"] {
+      .contact a[href^="mailto:"]:not(.email-link) {
         text-decoration: none;
       }
     </style>
   </head>
   <body>
     <h1 style="margin-top: 0">{{ name }}</h1>
-    <!-- edited or new: ensure name starts at very top -->
+
     <div class="contact">
       {{ phone }} |
-      <a href="mailto:{{ email }}" target="_blank" rel="noopener noreferrer">
+      <a
+        href="mailto:{{ email }}"
+        class="email-link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {{ email }}
       </a>
       |
-      <!-- make e-mail clickable -->
+
       <a href="https://{{ ld }}" target="_blank" rel="noopener noreferrer">
         {{ ld }}
       </a>
       |
-      <!-- now clickable GitHub -->
+
       <a href="https://{{ gd }}" target="_blank" rel="noopener noreferrer">
         {{ gd }}
       </a>
-      <!-- now clickable LinkedIn -->
     </div>
 
     <h2 class="section-title">Education</h2>
     <div class="education">
       <div class="subheading">
         <span>{{ education.university }}</span>
-        <span>{{ education.dates }}</span>
+        <span style="font-weight: normal">{{ education.location }}</span>
       </div>
       <div class="subheading">
-        <span><em>{{ education.degree }} – {{ education.location }}</em></span>
-        <span></span>
+        <span><em>{{ education.degree }}</em></span>
+        <span style="font-weight: normal"><em>{{ education.dates }}</em></span>
       </div>
+
+      {% if education.coursework %}
+      <ul class="item-list">
+        {% for course in education.coursework %}
+        <li>{{ course }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
     </div>
 
     <h2 class="section-title">Experience</h2>
     {% for exp in experience %}
+
     <div class="subheading">
       <span>{{ exp.title }}</span>
-      <span>{{ exp.dates }}</span>
+      <span style="font-weight: normal">{{ exp.dates }}</span>
     </div>
-    <div class="subheading" style="font-weight: normal">
-      <span>{{ exp.organization }} – {{ exp.location }}</span>
-      <span></span>
+
+    <div class="subheading">
+      <span><em>{{ exp.organization }}</em></span>
+
+      <span><em>{{ exp.location }}</em></span>
     </div>
+
     <ul class="item-list">
       {% for item in exp['items'] %}
       <li>{{ item }}</li>
@@ -161,13 +215,6 @@
     <ul class="skills-list">
       {% for skill in skills %}
       <li>{{ skill }}</li>
-      {% endfor %}
-    </ul>
-
-    <h2 class="section-title">Certifications</h2>
-    <ul class="certifications-list">
-      {% for cert in certifications %}
-      <li>{{ cert }}</li>
       {% endfor %}
     </ul>
 

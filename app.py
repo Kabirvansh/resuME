@@ -11,10 +11,17 @@ def resume():
         "linkedin": "linkedin.com/in/kabirvansh",
         "github": "github.com/Kabirvansh",
         "education": {
-            "university": "University of Alberta, Edmonton, Alberta",
+            "university": "University of Alberta",
             "degree": "Bachelor of Science in Computing Science - Specialization",
             "location": "Edmonton, Alberta",
-            "dates": "September 2022 - April 2026"
+            "dates": "September 2022 - April 2026",
+            "coursework": [
+                "Relevant Coursework: Object-oriented programming, Data Structures and Algorithms, "
+                "File and Database Management, Machine Learning, Visual Recognition, Statistics, "
+                "Search and Planning in AI, Reinforcement Learning, Object-oriented design and analysis, "
+                "Unified Modeling Language (UML), Software architecture, Design patterns, Frameworks, "
+                "Unit testing, and Economics."
+            ]
         },
         "experience": [
             {
@@ -70,12 +77,7 @@ def resume():
             "Plotly Dash, Streamlit, Power BI, Tableau",
             "Microsoft Azure, Firebase, Supabase, Amazon S3, Docker, Git/GitHub, Postman, Splunk, Hadoop"
         ],
-        "certifications": [
-            "Certified in Cyber Security (CC)",
-            "JPMorgan Chase Cybersecurity Simulation",
-            "Deep Web and Cybersecurity",
-            "Cybersecurity for Robotics"
-        ],
+
         "availability": [
             "Available for 4, 8, or 12-month work terms, starting September 2025"
         ]
