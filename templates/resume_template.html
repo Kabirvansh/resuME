@@ -10,37 +10,32 @@
     <style>
       @font-face {
         font-family: "Latin Modern Roman";
-        src: url("{{ url_for('static', filename='fonts/lmroman10-regular.otf') }}")
-          format("opentype");
+        src: url("static/fonts/lmroman10-regular.otf") format("opentype");
         font-weight: 400;
         font-style: normal;
       }
       @font-face {
         font-family: "Latin Modern Roman";
-        src: url("{{ url_for('static', filename='fonts/lmroman10-bold.otf') }}")
-          format("opentype");
+        src: url("static/fonts/lmroman10-bold.otf") format("opentype");
         font-weight: 700;
         font-style: normal;
       }
       @font-face {
         font-family: "Latin Modern Roman";
-        src: url("{{ url_for('static', filename='fonts/lmroman10-italic.otf') }}")
-          format("opentype");
+        src: url("static/fonts/lmroman10-italic.otf") format("opentype");
         font-weight: 400;
         font-style: italic;
       }
       @font-face {
         font-family: "Latin Modern Roman";
-        src: url("{{ url_for('static', filename='fonts/lmroman10-bolditalic.otf') }}")
-          format("opentype");
+        src: url("static/fonts/lmroman10-bolditalic.otf") format("opentype");
         font-weight: 700;
         font-style: italic;
       }
 
       @font-face {
         font-family: "Computer Modern Sans";
-        src: url("{{ url_for('static', filename='fonts/computer-modern/cmunbx.ttf') }}")
-          format("truetype");
+        src: url("static/fonts/computer-modern/cmunbx.ttf") format("truetype");
         font-weight: bold;
         font-style: normal;
       }
@@ -78,7 +73,7 @@
         margin-bottom: 4px;
         border-bottom: 1px solid #000;
         padding-bottom: 2px;
-
+        font-weight: normal;
         letter-spacing: 1px;
       }
       .subheading {
@@ -158,7 +153,7 @@
     </div>
 
     <h2 class="section-title">Education</h2>
-    <div class="education">
+    <div class="education" style="margin-left: 0.15in; margin-bottom: 8px">
       <div class="subheading">
         <span>{{ education.university }}</span>
         <span style="font-weight: normal">{{ education.location }}</span>
@@ -167,59 +162,58 @@
         <span><em>{{ education.degree }}</em></span>
         <span style="font-weight: normal"><em>{{ education.dates }}</em></span>
       </div>
-
       {% if education.coursework %}
-      <ul class="item-list">
-        {% for course in education.coursework %}
-        <li>{{ course }}</li>
-        {% endfor %}
-      </ul>
+      <div style="margin-bottom: 8px; font-size: 11pt">
+        • <strong>Relevant Coursework:</strong> {{ education.coursework }}
+      </div>
       {% endif %}
     </div>
 
     <h2 class="section-title">Experience</h2>
+    <div style="margin-left: 0.15in; margin-bottom: 8px">
     {% for exp in experience %}
-
-    <div class="subheading">
-      <span>{{ exp.title }}</span>
-      <span style="font-weight: normal">{{ exp.dates }}</span>
-    </div>
-
-    <div class="subheading">
-      <span><em>{{ exp.organization }}</em></span>
-
-      <span><em>{{ exp.location }}</em></span>
-    </div>
-
-    <ul class="item-list">
-      {% for item in exp['items'] %}
-      <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
+      <div class="subheading">
+        <span>{{ exp.title }}</span>
+        <span style="font-weight: normal">{{ exp.dates }}</span>
+      </div>
+      <div class="subheading">
+        <span><em>{{ exp.organization }}</em></span>
+        <span><em>{{ exp.location }}</em></span>
+      </div>
+      <ul class="item-list">
+        {% for item in exp['items'] %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
     {% endfor %}
+    </div>
 
     <h2 class="section-title">Projects</h2>
+    <div style="margin-left: 0.15in; margin-bottom: 8px">
     {% for proj in projects %}
-    <div class="subheading">
-      <span>{{ proj.name }} | <em>{{ proj.techs }}</em></span>
-      <span>{{ proj.date }}</span>
-    </div>
-    <ul class="item-list">
-      {% for item in proj['items'] %}
-      <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
+      <div class="subheading">
+        <span>{{ proj.name }} | <em>{{ proj.techs }}</em></span>
+        <span style="font-weight: normal">{{ proj.date }}</span>
+      </div>
+      <ul class="item-list">
+        {% for item in proj['items'] %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
     {% endfor %}
+    </div>
 
     <h2 class="section-title">Technical Skills</h2>
-    <ul class="skills-list">
-      {% for skill in skills %}
-      <li>{{ skill }}</li>
+    <div class="skills-list" style="margin-left: 0.15in; margin-bottom: 8px">
+      {% for category, items in skills.items() %}
+      <p style="margin: 0 0 4px 0">
+        <strong>{{ category }}:</strong> {{ items }}
+      </p>
       {% endfor %}
-    </ul>
+    </div>
 
     <h2 class="section-title">Availability</h2>
-    <ul class="availability-list">
+    <ul class="availability-list" style="margin-left: 0.15in; margin-bottom: 8px">
       {% for a in availability %}
       <li>{{ a }}</li>
       {% endfor %}

@@ -69,14 +69,12 @@ def resume():
                 ]
             }
         ],
-        "skills": [
-            "Python (pandas, Dash, Streamlit), SQL, JavaScript/TypeScript, C, HTML/CSS",
-            "Ignition Vision & OPC UA, Modbus TCP, DNP3, ModSim PLC Simulator",
-            "Wireshark packet analysis, OPC UA SecureChannel, ICS security fundamentals",
-            "Django, Flask, FastAPI, PostgreSQL, MongoDB",
-            "Plotly Dash, Streamlit, Power BI, Tableau",
-            "Microsoft Azure, Firebase, Supabase, Amazon S3, Docker, Git/GitHub, Postman, Splunk, Hadoop"
-        ],
+        "skills": {
+            "Languages": "Java, Python, SQL, JavaScript/TypeScript, C, HTML, Flask, React, Next.js, TailwindCSS, Bootstrap",
+            "Back-End & APIs": "Django, Flask, FastAPI, PostgreSQL, MongoDB",
+            "Data Visualization & BI": "Plotly Dash, Streamlit, Power BI, Tableau",
+            "Cloud & DevOps": "Microsoft Azure, Firebase, Supabase, Amazon S3, Docker, Git/GitHub, Postman, Splunk, Hadoop"
+        },
 
         "availability": [
             "Available for 4, 8, or 12-month work terms, starting September 2025"
