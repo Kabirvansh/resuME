@@ -11,9 +11,9 @@ def authenticate_user():
         <style>
         /* Increase sidebar width */
         [data-testid="stSidebar"] {
-            min-width: 350px;
-            max-width: 400px;
-            width: 350px;
+            min-width: 450px;
+            max-width: 500px;
+            width: 450px;
         }
         </style>
         """,
@@ -39,7 +39,7 @@ def authenticate_user():
 
     st.sidebar.markdown("---")
 
-    # --- Expandable Resume Info Sections ---
+    
     with st.sidebar.expander("Personal Info", expanded=True):
         name = st.text_input("Full Name", value=st.session_state.get("name", "Kabirvansh Singh Chadha"))
         email = st.text_input("Email", value=st.session_state.get("email", "kabirvansh1912@gmail.com"))
@@ -60,13 +60,13 @@ def authenticate_user():
             )
         )
 
-    with st.sidebar.expander("Experience (First Entry)", expanded=False):
+    with st.sidebar.expander("Experience 1", expanded=False):
         exp1_title = st.text_input("Title", value=st.session_state.get("exp1_title", "Lead Student Instructor (LSI)"))
         exp1_org = st.text_input("Organization", value=st.session_state.get("exp1_org", "University of Alberta"))
         exp1_loc = st.text_input("Location", value=st.session_state.get("exp1_loc", "Edmonton, Alberta"))
         exp1_dates = st.text_input("Dates", value=st.session_state.get("exp1_dates", "January 2025 - Present"))
         exp1_items = st.text_area(
-            "Responsibilities (one per line)",
+            "Description (one per line)",
             value=st.session_state.get(
                 "exp1_items",
                 "Guiding students in mastering advanced topics such as objects, functional programming, and Abstract Data Types (ADTs).\n"
@@ -75,13 +75,13 @@ def authenticate_user():
             )
         )
 
-    with st.sidebar.expander("Experience (Second Entry)", expanded=False):
+    with st.sidebar.expander("Experience 2", expanded=False):
         exp2_title = st.text_input("Title ", value=st.session_state.get("exp2_title", "Undergraduate Research Assistant"))
         exp2_org = st.text_input("Organization ", value=st.session_state.get("exp2_org", "University of Alberta"))
         exp2_loc = st.text_input("Location ", value=st.session_state.get("exp2_loc", "Edmonton, Alberta"))
         exp2_dates = st.text_input("Dates ", value=st.session_state.get("exp2_dates", "October 2024 - December 2024"))
         exp2_items = st.text_area(
-            "Responsibilities (one per line) ",
+            "Description (one per line) ",
             value=st.session_state.get(
                 "exp2_items",
                 "Designed engaging and educational assignments to enhance student understanding of key concepts such as data structures, algorithms, etc.\n"
@@ -90,7 +90,7 @@ def authenticate_user():
             )
         )
 
-    # Save to session state for use in build_context
+    
     st.session_state.name = name
     st.session_state.email = email
     st.session_state.phone = phone
