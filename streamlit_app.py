@@ -90,7 +90,30 @@ def authenticate_user():
             )
         )
 
-    
+    with st.sidebar.expander("Technical Skills", expanded=False):
+        skills_languages = st.text_input(
+            "Languages",
+            value=st.session_state.get("skills_languages", "Java, Python, SQL, JavaScript/TypeScript, C, HTML, Flask, React, Next.js, TailwindCSS, Bootstrap")
+        )
+        skills_backend = st.text_input(
+            "Back-End & APIs",
+            value=st.session_state.get("skills_backend", "Django, Flask, FastAPI, PostgreSQL, MongoDB")
+        )
+        skills_bi = st.text_input(
+            "Data Visualization",
+            value=st.session_state.get("skills_bi", "Plotly Dash, Streamlit, Power BI, Tableau")
+        )
+        skills_cloud = st.text_input(
+            "Cloud & DevOps",
+            value=st.session_state.get("skills_cloud", "Microsoft Azure, Firebase, Supabase, Amazon S3, Docker, Git/GitHub, Postman, Splunk, Hadoop")
+        )
+
+    with st.sidebar.expander("Availability", expanded=False):
+        availability = st.text_area(
+            "Availability (one per line)",
+            value=st.session_state.get("availability", "Available for 4, 8, or 12-month work terms, starting September 2025")
+        )
+
     st.session_state.name = name
     st.session_state.email = email
     st.session_state.phone = phone
@@ -113,6 +136,25 @@ def authenticate_user():
     st.session_state.exp2_loc = exp2_loc
     st.session_state.exp2_dates = exp2_dates
     st.session_state.exp2_items = exp2_items
+
+    st.session_state.skills_languages = skills_languages
+    st.session_state.skills_backend = skills_backend
+    st.session_state.skills_bi = skills_bi
+    st.session_state.skills_cloud = skills_cloud
+    st.session_state.availability = availability
+
+    # Add developer credit at the bottom of the sidebar
+    st.sidebar.markdown(
+        """
+        <div style='position: absolute; bottom: -100px; left: 8px; font-size: 14px; color: #888;'>
+            Developed by 
+            <a href="https://www.linkedin.com/in/kabirvansh" target="_blank" style="color:#2986cc;text-decoration:underline;">
+                Kabirvansh
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 @st.cache_resource
 def get_jinja_env():
@@ -183,15 +225,14 @@ def build_context():
             }
         ],
         "skills": {
-            "Languages": "Java, Python, SQL, JavaScript/TypeScript, C, HTML, Flask, React, Next.js, TailwindCSS, Bootstrap",
-            "Back-End & APIs": "Django, Flask, FastAPI, PostgreSQL, MongoDB",
-            "Data Visualization & BI": "Plotly Dash, Streamlit, Power BI, Tableau",
-            "Cloud & DevOps": "Microsoft Azure, Firebase, Supabase, Amazon S3, Docker, Git/GitHub, Postman, Splunk, Hadoop"
+            "Languages": st.session_state.get("skills_languages", ""),
+            "Back-End & APIs": st.session_state.get("skills_backend", ""),
+            "Data Visualization & BI": st.session_state.get("skills_bi", ""),
+            "Cloud & DevOps": st.session_state.get("skills_cloud", "")
         },
-
         "availability": [
-            "Available for 4, 8, or 12-month work terms, starting September 2025"
-        ]
+            a.strip() for a in st.session_state.get("availability", "").split("\n") if a.strip()
+        ],
     }
     return context
 
