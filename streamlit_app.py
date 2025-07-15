@@ -38,59 +38,57 @@ def authenticate_user():
                 st.sidebar.error("Invalid token")
 
     st.sidebar.markdown("---")
-    st.sidebar.title("Resume Info")
 
-    # User input fields for resume
-    name = st.sidebar.text_input("Full Name", value=st.session_state.get("name", "Kabirvansh Singh Chadha"))
-    email = st.sidebar.text_input("Email", value=st.session_state.get("email", "kabirvansh1912@gmail.com"))
-    phone = st.sidebar.text_input("Phone Number", value=st.session_state.get("phone", "587-937-5582"))
-    linkedin = st.sidebar.text_input("LinkedIn URL", value=st.session_state.get("linkedin", "linkedin.com/in/kabirvansh"))
-    github_url = st.sidebar.text_input("GitHub URL (optional)", value=st.session_state.get("github", "github.com/Kabirvansh"))
+    # --- Expandable Resume Info Sections ---
+    with st.sidebar.expander("Personal Info", expanded=True):
+        name = st.text_input("Full Name", value=st.session_state.get("name", "Kabirvansh Singh Chadha"))
+        email = st.text_input("Email", value=st.session_state.get("email", "kabirvansh1912@gmail.com"))
+        phone = st.text_input("Phone Number", value=st.session_state.get("phone", "587-937-5582"))
+        linkedin = st.text_input("LinkedIn URL", value=st.session_state.get("linkedin", "linkedin.com/in/kabirvansh"))
+        github_url = st.text_input("GitHub URL (optional)", value=st.session_state.get("github", "github.com/Kabirvansh"))
 
-    # Dynamic education fields
-    university = st.sidebar.text_input("University", value=st.session_state.get("university", "University of Alberta"))
-    degree = st.sidebar.text_input("Degree", value=st.session_state.get("degree", "Bachelor of Science in Computing Science - Specialization"))
-    edu_location = st.sidebar.text_input("Education Location", value=st.session_state.get("edu_location", "Edmonton, Alberta"))
-    edu_dates = st.sidebar.text_input("Education Dates", value=st.session_state.get("edu_dates", "September 2022 - April 2026"))
-    coursework = st.sidebar.text_area(
-        "Relevant Coursework (comma separated)",
-        value=st.session_state.get(
-            "coursework",
-            "Object-oriented programming, Data Structures and Algorithms, File and Database Management, Machine Learning, Visual Recognition, Statistics, Search and Planning in AI, Reinforcement Learning, Object-oriented design and analysis, Unified Modeling Language (UML), Software architecture, Design patterns, Frameworks, Unit testing, and Economics."
+    with st.sidebar.expander("Education", expanded=False):
+        university = st.text_input("University", value=st.session_state.get("university", "University of Alberta"))
+        degree = st.text_input("Degree", value=st.session_state.get("degree", "Bachelor of Science in Computing Science - Specialization"))
+        edu_location = st.text_input("Education Location", value=st.session_state.get("edu_location", "Edmonton, Alberta"))
+        edu_dates = st.text_input("Education Dates", value=st.session_state.get("edu_dates", "September 2022 - April 2026"))
+        coursework = st.text_area(
+            "Relevant Coursework (comma separated)",
+            value=st.session_state.get(
+                "coursework",
+                "Object-oriented programming, Data Structures and Algorithms, File and Database Management, Machine Learning, Visual Recognition, Statistics, Search and Planning in AI, Reinforcement Learning, Object-oriented design and analysis, Unified Modeling Language (UML), Software architecture, Design patterns, Frameworks, Unit testing, and Economics."
+            )
         )
-    )
 
-    # --- Dynamic Experience Fields ---
-    st.sidebar.markdown("---")
-    st.sidebar.subheader("Experience (First Entry)")
-    exp1_title = st.sidebar.text_input("Title", value=st.session_state.get("exp1_title", "Lead Student Instructor (LSI)"))
-    exp1_org = st.sidebar.text_input("Organization", value=st.session_state.get("exp1_org", "University of Alberta"))
-    exp1_loc = st.sidebar.text_input("Location", value=st.session_state.get("exp1_loc", "Edmonton, Alberta"))
-    exp1_dates = st.sidebar.text_input("Dates", value=st.session_state.get("exp1_dates", "January 2025 - Present"))
-    exp1_items = st.sidebar.text_area(
-        "Responsibilities (one per line)",
-        value=st.session_state.get(
-            "exp1_items",
-            "Guiding students in mastering advanced topics such as objects, functional programming, and Abstract Data Types (ADTs).\n"
-            "Facilitating learning of algorithms, including popular searching and sorting techniques, focusing on time and space efficiency.\n"
-            "Managed a team of TAs for course content development, resource creation, and assignment marking."
+    with st.sidebar.expander("Experience (First Entry)", expanded=False):
+        exp1_title = st.text_input("Title", value=st.session_state.get("exp1_title", "Lead Student Instructor (LSI)"))
+        exp1_org = st.text_input("Organization", value=st.session_state.get("exp1_org", "University of Alberta"))
+        exp1_loc = st.text_input("Location", value=st.session_state.get("exp1_loc", "Edmonton, Alberta"))
+        exp1_dates = st.text_input("Dates", value=st.session_state.get("exp1_dates", "January 2025 - Present"))
+        exp1_items = st.text_area(
+            "Responsibilities (one per line)",
+            value=st.session_state.get(
+                "exp1_items",
+                "Guiding students in mastering advanced topics such as objects, functional programming, and Abstract Data Types (ADTs).\n"
+                "Facilitating learning of algorithms, including popular searching and sorting techniques, focusing on time and space efficiency.\n"
+                "Managed a team of TAs for course content development, resource creation, and assignment marking."
+            )
         )
-    )
 
-    st.sidebar.subheader("Experience (Second Entry)")
-    exp2_title = st.sidebar.text_input("Title ", value=st.session_state.get("exp2_title", "Undergraduate Research Assistant"))
-    exp2_org = st.sidebar.text_input("Organization ", value=st.session_state.get("exp2_org", "University of Alberta"))
-    exp2_loc = st.sidebar.text_input("Location ", value=st.session_state.get("exp2_loc", "Edmonton, Alberta"))
-    exp2_dates = st.sidebar.text_input("Dates ", value=st.session_state.get("exp2_dates", "October 2024 - December 2024"))
-    exp2_items = st.sidebar.text_area(
-        "Responsibilities (one per line) ",
-        value=st.session_state.get(
-            "exp2_items",
-            "Designed engaging and educational assignments to enhance student understanding of key concepts such as data structures, algorithms, etc.\n"
-            "Collaborated with instructors to refine course materials and improve student engagement.\n"
-            "Integrated third-party services like Kritik to streamline peer-review workflows."
+    with st.sidebar.expander("Experience (Second Entry)", expanded=False):
+        exp2_title = st.text_input("Title ", value=st.session_state.get("exp2_title", "Undergraduate Research Assistant"))
+        exp2_org = st.text_input("Organization ", value=st.session_state.get("exp2_org", "University of Alberta"))
+        exp2_loc = st.text_input("Location ", value=st.session_state.get("exp2_loc", "Edmonton, Alberta"))
+        exp2_dates = st.text_input("Dates ", value=st.session_state.get("exp2_dates", "October 2024 - December 2024"))
+        exp2_items = st.text_area(
+            "Responsibilities (one per line) ",
+            value=st.session_state.get(
+                "exp2_items",
+                "Designed engaging and educational assignments to enhance student understanding of key concepts such as data structures, algorithms, etc.\n"
+                "Collaborated with instructors to refine course materials and improve student engagement.\n"
+                "Integrated third-party services like Kritik to streamline peer-review workflows."
+            )
         )
-    )
 
     # Save to session state for use in build_context
     st.session_state.name = name
@@ -104,7 +102,6 @@ def authenticate_user():
     st.session_state.edu_dates = edu_dates
     st.session_state.coursework = coursework
 
-    # Experience fields
     st.session_state.exp1_title = exp1_title
     st.session_state.exp1_org = exp1_org
     st.session_state.exp1_loc = exp1_loc
