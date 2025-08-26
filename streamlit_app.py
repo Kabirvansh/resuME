@@ -928,7 +928,7 @@ def display_ats_analysis_with_suggestions(analysis_results):
                             # Apply the suggestion
                             apply_suggestion_to_session_state(suggestion)
                             st.success("✅ Applied! Your resume has been updated.")
-                            st.experimental_rerun()
+                            st.rerun()  # CHANGED: from st.experimental_rerun()
                     
                     with col2:
                         if st.button(f"❌ Skip", key=f"skip_{i}"):
@@ -943,7 +943,7 @@ def display_ats_analysis_with_suggestions(analysis_results):
                 for suggestion in suggestions:
                     apply_suggestion_to_session_state(suggestion)
                 st.success(f"✅ Applied all {len(suggestions)} suggestions! Your resume has been updated.")
-                st.experimental_rerun()
+                st.rerun()  # CHANGED: from st.experimental_rerun()
 
 def apply_suggestion_to_session_state(suggestion):
     """Apply suggestion directly to Streamlit session state"""
