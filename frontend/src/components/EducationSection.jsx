@@ -1,43 +1,41 @@
-import React, { useState } from 'react'
-import { Plus, Trash2, GraduationCap } from 'lucide-react'
+import React, { useState } from "react";
+import { Plus, Trash2, GraduationCap } from "lucide-react";
 
 function EducationSection({ data, onChange }) {
-  const [expandedIndex, setExpandedIndex] = useState(null)
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const addEducation = () => {
     const newEducation = {
-      institution: '',
-      degree: '',
-      field: '',
-      startDate: '',
-      endDate: '',
-      gpa: '',
-      description: ''
-    }
-    onChange('education', [...data, newEducation])
-    setExpandedIndex(data.length)
-  }
+      university: "",
+      degree: "",
+      location: "",
+      dates: "",
+      coursework: "",
+    };
+    onChange("education", [...data, newEducation]);
+    setExpandedIndex(data.length);
+  };
 
   const updateEducation = (index, field, value) => {
-    const updated = data.map((edu, i) => 
+    const updated = data.map((edu, i) =>
       i === index ? { ...edu, [field]: value } : edu
-    )
-    onChange('education', updated)
-  }
+    );
+    onChange("education", updated);
+  };
 
   const removeEducation = (index) => {
-    const updated = data.filter((_, i) => i !== index)
-    onChange('education', updated)
+    const updated = data.filter((_, i) => i !== index);
+    onChange("education", updated);
     if (expandedIndex === index) {
-      setExpandedIndex(null)
+      setExpandedIndex(null);
     } else if (expandedIndex > index) {
-      setExpandedIndex(expandedIndex - 1)
+      setExpandedIndex(expandedIndex - 1);
     }
-  }
+  };
 
   const toggleExpanded = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index)
-  }
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
     <div className="space-y-6">
@@ -56,39 +54,39 @@ function EducationSection({ data, onChange }) {
         <div className="text-center py-8 text-gray-500">
           <GraduationCap className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <p>No education added yet</p>
-          <button
-            onClick={addEducation}
-            className="btn-primary mt-4"
-          >
+          <button onClick={addEducation} className="btn-primary mt-4">
             Add Your Education
           </button>
         </div>
       ) : (
         <div className="space-y-4">
           {data.map((education, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-              <div 
+            <div
+              key={index}
+              className="border border-gray-200 rounded-lg overflow-hidden"
+            >
+              <div
                 className="p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
                 onClick={() => toggleExpanded(index)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">
-                      {education.degree || 'Degree'} {education.field && `in ${education.field}`}
+                      {education.university || "University"}
                     </h3>
                     <p className="text-gray-600 text-sm">
-                      {education.institution || 'Institution Name'}
+                      {education.degree || "Degree"}
                     </p>
                     <p className="text-gray-500 text-xs mt-1">
-                      {education.startDate || 'Start'} - {education.endDate || 'End'}
-                      {education.gpa && ` • GPA: ${education.gpa}`}
+                      {education.location || "Location"} •{" "}
+                      {education.dates || "Dates"}
                     </p>
                   </div>
-                  
+
                   <button
                     onClick={(e) => {
-                      e.stopPropagation()
-                      removeEducation(index)
+                      e.stopPropagation();
+                      removeEducation(index);
                     }}
                     className="text-red-500 hover:text-red-700 p-2"
                     title="Remove education"
@@ -97,103 +95,86 @@ function EducationSection({ data, onChange }) {
                   </button>
                 </div>
               </div>
-              
+
               {expandedIndex === index && (
                 <div className="p-4 bg-white space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Institution *
+                        University *
                       </label>
                       <input
                         type="text"
-                        value={education.institution}
-                        onChange={(e) => updateEducation(index, 'institution', e.target.value)}
+                        value={education.university}
+                        onChange={(e) =>
+                          updateEducation(index, "university", e.target.value)
+                        }
                         className="input-primary"
-                        placeholder="University of Punjab"
+                        placeholder="University of Alberta"
                         required
                       />
                     </div>
-                    
+
                     <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Education Location
+                      </label>
+                      <input
+                        type="text"
+                        value={education.location}
+                        onChange={(e) =>
+                          updateEducation(index, "location", e.target.value)
+                        }
+                        className="input-primary"
+                        placeholder="Edmonton, Alberta"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Degree *
                       </label>
                       <input
                         type="text"
                         value={education.degree}
-                        onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+                        onChange={(e) =>
+                          updateEducation(index, "degree", e.target.value)
+                        }
                         className="input-primary"
-                        placeholder="Bachelor of Technology"
+                        placeholder="Bachelor of Science in Computing Science - Specialization"
                         required
                       />
                     </div>
-                    
-                    <div>
+
+                    <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Field of Study
+                        Education Dates
                       </label>
                       <input
                         type="text"
-                        value={education.field}
-                        onChange={(e) => updateEducation(index, 'field', e.target.value)}
+                        value={education.dates}
+                        onChange={(e) =>
+                          updateEducation(index, "dates", e.target.value)
+                        }
                         className="input-primary"
-                        placeholder="Computer Science Engineering"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        GPA/CGPA
-                      </label>
-                      <input
-                        type="text"
-                        value={education.gpa}
-                        onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
-                        className="input-primary"
-                        placeholder="8.5/10 or 3.8/4.0"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Start Date
-                      </label>
-                      <input
-                        type="month"
-                        value={education.startDate}
-                        onChange={(e) => updateEducation(index, 'startDate', e.target.value)}
-                        className="input-primary"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        End Date
-                      </label>
-                      <input
-                        type="month"
-                        value={education.endDate}
-                        onChange={(e) => updateEducation(index, 'endDate', e.target.value)}
-                        className="input-primary"
+                        placeholder="September 2022 - April 2026"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Additional Details
+                      Relevant Coursework (comma separated)
                     </label>
                     <textarea
-                      value={education.description}
-                      onChange={(e) => updateEducation(index, 'description', e.target.value)}
-                      rows={3}
+                      value={education.coursework}
+                      onChange={(e) =>
+                        updateEducation(index, "coursework", e.target.value)
+                      }
+                      rows={4}
                       className="input-primary resize-vertical"
-                      placeholder="• Relevant coursework, achievements, honors, or activities&#10;• Dean's List, scholarships, academic projects&#10;• Leadership roles or extracurricular activities"
+                      placeholder="Object-oriented programming, Data Structures and Algorithms, File and Database Management, Machine Learning, Visual Recognition, Statistics, Search and Planning in AI, Reinforcement Learning, Object-oriented design and analysis, Unified Modeling Language (UML), Software architecture, Design patterns, Frameworks, Unit testing, and Economics."
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Use bullet points (•) for better formatting
-                    </p>
                   </div>
                 </div>
               )}
@@ -202,7 +183,7 @@ function EducationSection({ data, onChange }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default EducationSection
+export default EducationSection;

@@ -1,42 +1,41 @@
-import React, { useState } from 'react'
-import { Plus, Trash2, Calendar } from 'lucide-react'
+import React, { useState } from "react";
+import { Plus, Trash2, Calendar } from "lucide-react";
 
 function ExperienceSection({ data, onChange }) {
-  const [expandedIndex, setExpandedIndex] = useState(null)
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const addExperience = () => {
     const newExperience = {
-      company: '',
-      position: '',
-      startDate: '',
-      endDate: '',
-      current: false,
-      description: ''
-    }
-    onChange('experience', [...data, newExperience])
-    setExpandedIndex(data.length)
-  }
+      title: "",
+      organization: "",
+      location: "",
+      dates: "",
+      items: [],
+    };
+    onChange("experience", [...data, newExperience]);
+    setExpandedIndex(data.length);
+  };
 
   const updateExperience = (index, field, value) => {
-    const updated = data.map((exp, i) => 
+    const updated = data.map((exp, i) =>
       i === index ? { ...exp, [field]: value } : exp
-    )
-    onChange('experience', updated)
-  }
+    );
+    onChange("experience", updated);
+  };
 
   const removeExperience = (index) => {
-    const updated = data.filter((_, i) => i !== index)
-    onChange('experience', updated)
+    const updated = data.filter((_, i) => i !== index);
+    onChange("experience", updated);
     if (expandedIndex === index) {
-      setExpandedIndex(null)
+      setExpandedIndex(null);
     } else if (expandedIndex > index) {
-      setExpandedIndex(expandedIndex - 1)
+      setExpandedIndex(expandedIndex - 1);
     }
-  }
+  };
 
   const toggleExpanded = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index)
-  }
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
     <div className="space-y-6">
@@ -55,38 +54,39 @@ function ExperienceSection({ data, onChange }) {
         <div className="text-center py-8 text-gray-500">
           <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <p>No work experience added yet</p>
-          <button
-            onClick={addExperience}
-            className="btn-primary mt-4"
-          >
+          <button onClick={addExperience} className="btn-primary mt-4">
             Add Your First Job
           </button>
         </div>
       ) : (
         <div className="space-y-4">
           {data.map((experience, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-              <div 
+            <div
+              key={index}
+              className="border border-gray-200 rounded-lg overflow-hidden"
+            >
+              <div
                 className="p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
                 onClick={() => toggleExpanded(index)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">
-                      {experience.position || 'New Position'}
+                      {experience.title || "New Position"}
                     </h3>
                     <p className="text-gray-600 text-sm">
-                      {experience.company || 'Company Name'}
+                      {experience.organization || "Organization"}
                     </p>
                     <p className="text-gray-500 text-xs mt-1">
-                      {experience.startDate || 'Start'} - {experience.current ? 'Present' : experience.endDate || 'End'}
+                      {experience.location || "Location"} •{" "}
+                      {experience.dates || "Dates"}
                     </p>
                   </div>
-                  
+
                   <button
                     onClick={(e) => {
-                      e.stopPropagation()
-                      removeExperience(index)
+                      e.stopPropagation();
+                      removeExperience(index);
                     }}
                     className="text-red-500 hover:text-red-700 p-2"
                     title="Remove experience"
@@ -95,88 +95,99 @@ function ExperienceSection({ data, onChange }) {
                   </button>
                 </div>
               </div>
-              
+
               {expandedIndex === index && (
                 <div className="p-4 bg-white space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Position Title *
+                        Title *
                       </label>
                       <input
                         type="text"
-                        value={experience.position}
-                        onChange={(e) => updateExperience(index, 'position', e.target.value)}
+                        value={experience.title}
+                        onChange={(e) =>
+                          updateExperience(index, "title", e.target.value)
+                        }
                         className="input-primary"
-                        placeholder="Software Engineer"
+                        placeholder="Lead Student Instructor (LSI)"
                         required
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Company *
+                        Organization *
                       </label>
                       <input
                         type="text"
-                        value={experience.company}
-                        onChange={(e) => updateExperience(index, 'company', e.target.value)}
+                        value={experience.organization}
+                        onChange={(e) =>
+                          updateExperience(
+                            index,
+                            "organization",
+                            e.target.value
+                          )
+                        }
                         className="input-primary"
-                        placeholder="Tech Company Pvt Ltd"
+                        placeholder="University of Alberta"
                         required
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Start Date
+                        Location
                       </label>
                       <input
-                        type="month"
-                        value={experience.startDate}
-                        onChange={(e) => updateExperience(index, 'startDate', e.target.value)}
+                        type="text"
+                        value={experience.location}
+                        onChange={(e) =>
+                          updateExperience(index, "location", e.target.value)
+                        }
                         className="input-primary"
+                        placeholder="Edmonton, Alberta"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        End Date
+                        Dates
                       </label>
-                      <div className="space-y-2">
-                        <input
-                          type="month"
-                          value={experience.endDate}
-                          onChange={(e) => updateExperience(index, 'endDate', e.target.value)}
-                          className="input-primary"
-                          disabled={experience.current}
-                        />
-                        <label className="flex items-center text-sm text-gray-600">
-                          <input
-                            type="checkbox"
-                            checked={experience.current}
-                            onChange={(e) => updateExperience(index, 'current', e.target.checked)}
-                            className="mr-2"
-                          />
-                          Currently working here
-                        </label>
-                      </div>
+                      <input
+                        type="text"
+                        value={experience.dates}
+                        onChange={(e) =>
+                          updateExperience(index, "dates", e.target.value)
+                        }
+                        className="input-primary"
+                        placeholder="January 2025 - Present"
+                      />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Job Description
+                      Description (one per line)
                     </label>
                     <textarea
-                      value={experience.description}
-                      onChange={(e) => updateExperience(index, 'description', e.target.value)}
-                      rows={4}
+                      value={
+                        Array.isArray(experience.items)
+                          ? experience.items.join("\n")
+                          : experience.items || ""
+                      }
+                      onChange={(e) => {
+                        const items = e.target.value
+                          .split("\n")
+                          .filter((line) => line.trim());
+                        updateExperience(index, "items", items);
+                      }}
+                      rows={5}
                       className="input-primary resize-vertical"
-                      placeholder="• Developed and maintained web applications using React and Node.js&#10;• Collaborated with cross-functional teams to deliver high-quality software solutions&#10;• Improved application performance by 30% through code optimization"
+                      placeholder="Guiding students in mastering advanced topics such as objects, functional programming, and Abstract Data Types (ADTs).&#10;Facilitating learning of algorithms, including popular searching and sorting techniques, focusing on time and space efficiency.&#10;Managed a team of TAs for course content development, resource creation, and assignment marking."
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Use bullet points (•) for better formatting
+                      Enter one bullet point per line (no bullet symbols needed)
                     </p>
                   </div>
                 </div>
@@ -186,7 +197,7 @@ function ExperienceSection({ data, onChange }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default ExperienceSection
+export default ExperienceSection;
