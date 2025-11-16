@@ -1,53 +1,61 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { ResumeProvider } from './context/ResumeContext'
-import FormPage from './pages/FormPage'
-import PreviewPage from './pages/PreviewPage'
+import React from "react";
+import {
+  NavLink,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { ResumeProvider } from "./context/ResumeContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import FormPage from "./pages/FormPage";
+import ATSAnalyzer from "./pages/ATSAnalyzer";
+import JobsApplied from "./pages/JobsApplied";
+import LandingPage from "./pages/LandingPage";
+import Header from "./assets/components/Header";
+import GlobalBackground from "./assets/components/GlobalBackground";
 
-function App() {
+// App.jsx = Global shell of the frontend.
+// - Provides the site-wide header and navigation bar
+// - Defines routes (/form, /ats, /jobs)
+// - Wraps everything in ResumeProvider so all pages can read/write resume data
+//
+// Styling notes:
+// - We use Tailwind utility classes (e.g., bg-gray-900, text-white, px-4).
+// - To change colors, spacing, or typography, edit the className strings below.
+// - Header brand text "ResuME" can be changed directly in the <h1>.
+// - To add a new top-level page, create a file in src/pages and add a <Route> + <NavLink>.
+
+function Shell() {
+  const location = useLocation();
+  const isLanding = location.pathname === "/";
+  const { lightMode } = useTheme();
+
   return (
-    <ResumeProvider>
-      <Router>
-        <div className="min-h-screen bg-gray-50">
-          <header className="bg-white shadow-sm border-b">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center py-6">
-                <div className="flex items-center">
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    Resu<span className="text-blue-600">ME</span>
-                  </h1>
-                  <span className="ml-3 text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    Jatt Da
-                  </span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">
-                    Developed by{' '}
-                    <a
-                      href="https://www.linkedin.com/in/kabirvansh"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 underline"
-                    >
-                      Kabirvansh
-                    </a>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </header>
+    // No bg-* here; let GlobalBackground control page background.
+    <div className={`min-h-screen ${lightMode ? "text-black" : "text-white"}`}>
+      <GlobalBackground />
+      {!isLanding && <Header />}
 
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <Routes>
-              <Route path="/" element={<Navigate to="/form" replace />} />
-              <Route path="/form" element={<FormPage />} />
-              <Route path="/preview" element={<PreviewPage />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
-    </ResumeProvider>
-  )
+      <main className={isLanding ? "" : "max-w-6xl mx-auto px-4 py-6"}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/form" element={<FormPage />} />
+          <Route path="/ats" element={<ATSAnalyzer />} />
+          <Route path="/jobs" element={<JobsApplied />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <ThemeProvider>
+      <ResumeProvider>
+        <Shell />
+      </ResumeProvider>
+    </ThemeProvider>
+  );
+}
