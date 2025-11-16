@@ -1,42 +1,40 @@
-import React, { useState } from 'react'
-import { Plus, Trash2, Code2, ExternalLink } from 'lucide-react'
+import React, { useState } from "react";
+import { Plus, Trash2, Code2, ExternalLink } from "lucide-react";
 
 function ProjectsSection({ data, onChange }) {
-  const [expandedIndex, setExpandedIndex] = useState(null)
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const addProject = () => {
     const newProject = {
-      name: '',
-      description: '',
-      technologies: '',
-      githubUrl: '',
-      liveUrl: '',
-      highlights: ''
-    }
-    onChange('projects', [...data, newProject])
-    setExpandedIndex(data.length)
-  }
+      name: "",
+      techs: "",
+      date: "",
+      items: [],
+    };
+    onChange("projects", [...data, newProject]);
+    setExpandedIndex(data.length);
+  };
 
   const updateProject = (index, field, value) => {
-    const updated = data.map((project, i) => 
+    const updated = data.map((project, i) =>
       i === index ? { ...project, [field]: value } : project
-    )
-    onChange('projects', updated)
-  }
+    );
+    onChange("projects", updated);
+  };
 
   const removeProject = (index) => {
-    const updated = data.filter((_, i) => i !== index)
-    onChange('projects', updated)
+    const updated = data.filter((_, i) => i !== index);
+    onChange("projects", updated);
     if (expandedIndex === index) {
-      setExpandedIndex(null)
+      setExpandedIndex(null);
     } else if (expandedIndex > index) {
-      setExpandedIndex(expandedIndex - 1)
+      setExpandedIndex(expandedIndex - 1);
     }
-  }
+  };
 
   const toggleExpanded = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index)
-  }
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
     <div className="space-y-6">
@@ -55,159 +53,119 @@ function ProjectsSection({ data, onChange }) {
         <div className="text-center py-8 text-gray-500">
           <Code2 className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <p>No projects added yet</p>
-          <button
-            onClick={addProject}
-            className="btn-primary mt-4"
-          >
+          <button onClick={addProject} className="btn-primary mt-4">
             Add Your First Project
           </button>
         </div>
       ) : (
         <div className="space-y-4">
           {data.map((project, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-              <div 
+            <div
+              key={index}
+              className="border border-gray-200 rounded-lg overflow-hidden"
+            >
+              <div
                 className="p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
                 onClick={() => toggleExpanded(index)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">
-                      {project.name || 'New Project'}
+                      {project.name || "New Project"}
                     </h3>
-                    <p className="text-gray-600 text-sm line-clamp-2">
-                      {project.description || 'Project description'}
+                    {project.techs && (
+                      <p className="text-gray-600 text-sm">{project.techs}</p>
+                    )}
+                    <p className="text-gray-500 text-xs mt-1">
+                      {project.date || "Date"}
                     </p>
-                    {project.technologies && (
-                      <p className="text-gray-500 text-xs mt-1">
-                        Technologies: {project.technologies}
-                      </p>
-                    )}
                   </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-gray-500 hover:text-gray-700 p-1"
-                        title="GitHub Repository"
-                      >
-                        <Code2 className="w-4 h-4" />
-                      </a>
-                    )}
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-gray-500 hover:text-gray-700 p-1"
-                        title="Live Demo"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        removeProject(index)
-                      }}
-                      className="text-red-500 hover:text-red-700 p-2"
-                      title="Remove project"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeProject(index);
+                    }}
+                    className="text-red-500 hover:text-red-700 p-2"
+                    title="Remove project"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-              
+
               {expandedIndex === index && (
                 <div className="p-4 bg-white space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Project Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={project.name}
-                      onChange={(e) => updateProject(index, 'name', e.target.value)}
-                      className="input-primary"
-                      placeholder="Awesome Project"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description *
-                    </label>
-                    <textarea
-                      value={project.description}
-                      onChange={(e) => updateProject(index, 'description', e.target.value)}
-                      rows={3}
-                      className="input-primary resize-vertical"
-                      placeholder="A brief description of what this project does and its key features..."
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Technologies Used
-                    </label>
-                    <input
-                      type="text"
-                      value={project.technologies}
-                      onChange={(e) => updateProject(index, 'technologies', e.target.value)}
-                      className="input-primary"
-                      placeholder="React, Node.js, MongoDB, Express"
-                    />
-                  </div>
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        GitHub URL
+                        Project Name *
                       </label>
                       <input
-                        type="url"
-                        value={project.githubUrl}
-                        onChange={(e) => updateProject(index, 'githubUrl', e.target.value)}
+                        type="text"
+                        value={project.name}
+                        onChange={(e) =>
+                          updateProject(index, "name", e.target.value)
+                        }
                         className="input-primary"
-                        placeholder="https://github.com/username/project"
+                        placeholder="Compressor Station SCADA Demo"
+                        required
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Live Demo URL
+                        Completion Month & Year
                       </label>
                       <input
-                        type="url"
-                        value={project.liveUrl}
-                        onChange={(e) => updateProject(index, 'liveUrl', e.target.value)}
+                        type="text"
+                        value={project.date}
+                        onChange={(e) =>
+                          updateProject(index, "date", e.target.value)
+                        }
                         className="input-primary"
-                        placeholder="https://yourproject.com"
+                        placeholder="May 2025"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Key Highlights
+                      Technologies Used (comma separated)
+                    </label>
+                    <input
+                      type="text"
+                      value={project.techs}
+                      onChange={(e) =>
+                        updateProject(index, "techs", e.target.value)
+                      }
+                      className="input-primary"
+                      placeholder="Ignition, OPC UA, Wireshark, Streamlit, Python, Git"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Project Description (one point per line)
                     </label>
                     <textarea
-                      value={project.highlights}
-                      onChange={(e) => updateProject(index, 'highlights', e.target.value)}
-                      rows={3}
+                      value={
+                        Array.isArray(project.items)
+                          ? project.items.join("\n")
+                          : project.items || ""
+                      }
+                      onChange={(e) => {
+                        const items = e.target.value
+                          .split("\n")
+                          .filter((line) => line.trim());
+                        updateProject(index, "items", items);
+                      }}
+                      rows={5}
                       className="input-primary resize-vertical"
-                      placeholder="• Achieved 99% uptime with robust error handling&#10;• Implemented user authentication with JWT&#10;• Built responsive UI with modern design principles"
+                      placeholder="Designed and implemented an Ignition Vision HMI with OPC UA-backed tags …&#10;Captured and decoded OPC UA SecureChannel traffic …&#10;Developed a Streamlit dashboard to visualize historical pressure data …"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Use bullet points (•) for better formatting
+                      Enter one bullet point per line (no bullet symbols needed)
                     </p>
                   </div>
                 </div>
@@ -217,7 +175,7 @@ function ProjectsSection({ data, onChange }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default ProjectsSection
+export default ProjectsSection;
