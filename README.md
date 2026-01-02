@@ -14,6 +14,7 @@ A full-stack resume builder application with React frontend and Flask backend fo
 ## Tech Stack 🛠️
 
 ### Frontend
+
 - **React** 18.2+ with hooks and context
 - **Vite** for fast development and building
 - **React Router** for navigation
@@ -22,6 +23,7 @@ A full-stack resume builder application with React frontend and Flask backend fo
 - **JavaScript ES6+**
 
 ### Backend
+
 - **Flask** Python web framework
 - **Jinja2** for HTML templating
 - **WeasyPrint** for PDF generation
@@ -30,17 +32,20 @@ A full-stack resume builder application with React frontend and Flask backend fo
 ## Quick Start 🚀
 
 ### Prerequisites
+
 - Node.js (v18+ recommended)
 - Python 3.8+
 - pip (Python package manager)
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <repository-url>
 cd resuME
 ```
 
 ### 2. Setup Backend (Flask API)
+
 ```bash
 # Create virtual environment
 python -m venv venv
@@ -61,6 +66,7 @@ python -c "from pdf_api import app; app.run(debug=True, port=5001)"
 The Flask API will be running at `http://localhost:5001`
 
 ### 3. Setup Frontend (React App)
+
 ```bash
 # Navigate to frontend directory
 cd frontend
@@ -72,6 +78,7 @@ npx vite dev --host --port 3000
 The React app will be running at `http://localhost:3000`
 
 ### 4. Open Application
+
 Navigate to `http://localhost:3000` in your browser to start building your resume!
 
 ## Project Structure 📁
@@ -111,27 +118,41 @@ resuME/
 ## API Endpoints 🔌
 
 ### POST `/generate-pdf`
+
 Generates and returns a PDF file from resume data.
 
 **Request Body:**
+
 ```json
 {
-  "personalInfo": { /* personal details */ },
-  "experience": [ /* work experience array */ ],
-  "education": [ /* education array */ ],
-  "projects": [ /* projects array */ ],
-  "skills": { /* skills by category */ }
+  "personalInfo": {
+    /* personal details */
+  },
+  "experience": [
+    /* work experience array */
+  ],
+  "education": [
+    /* education array */
+  ],
+  "projects": [
+    /* projects array */
+  ],
+  "skills": {
+    /* skills by category */
+  }
 }
 ```
 
 **Response:** PDF file download
 
 ### POST `/preview-pdf`
+
 Generates a base64-encoded PDF for browser preview.
 
 **Request Body:** Same as above
 
 **Response:**
+
 ```json
 {
   "pdf": "base64-encoded-pdf-data"
@@ -141,30 +162,39 @@ Generates a base64-encoded PDF for browser preview.
 ## Development Notes 📝
 
 ### Port Configuration
+
 - **Frontend (React):** Port 3000
 - **Backend (Flask):** Port 5001 (5000 is often used by macOS AirPlay)
 
 ### CORS Setup
+
 The Flask API includes CORS headers to allow requests from the React frontend during development.
 
 ### Environment Variables
+
 Create a `.env` file in the root directory for any environment-specific configurations.
 
 ## Troubleshooting 🔧
 
 ### Port 5000 Already in Use
+
 On macOS, port 5000 is often used by AirPlay Receiver. The Flask app is configured to use port 5001. If you need to change this, update both:
+
 1. `pdf_api.py` - Change the port in the run command
 2. `frontend/src/lib/downloadPdf.js` - Update the API URLs
 
 ### PDF Generation Issues
+
 If PDF generation fails, ensure:
+
 1. WeasyPrint is properly installed
 2. Font files exist in the `static/fonts/` directory
 3. HTML template is valid
 
 ### React Development Issues
+
 If the frontend doesn't start:
+
 1. Ensure Node.js v18+ is installed
 2. Try clearing npm cache: `npm cache clean --force`
 3. Use `npx vite dev` directly if npm scripts fail
