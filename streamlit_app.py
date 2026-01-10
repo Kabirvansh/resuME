@@ -265,33 +265,83 @@ def render_html(context):
     return tpl.render(**context)
 
 def html_to_pdf_bytes(html: str) -> bytes:
-    # Prefer WeasyPrint when available (fast, pure-Python wrapper over native libs)
-    if 'WEASYPRINT_AVAILABLE' in globals() and WEASYPRINT_AVAILABLE:
-        return HTML(string=html, base_url=os.getcwd()).write_pdf()
+    # Determine provider: 'weasy', 'playwright', or 'api'. Default 'auto' tries weasy then playwright then api.
+    provider = os.getenv("PDF_PROVIDER", "auto").lower()
 
-    # Fallback: try Playwright (headless Chromium). This requires the Playwright
-    # Python package and browser binaries available in the environment.
-    if 'PLAYWRIGHT_AVAILABLE' in globals() and PLAYWRIGHT_AVAILABLE:
+    def try_weasy():
+        if 'WEASYPRINT_AVAILABLE' in globals() and WEASYPRINT_AVAILABLE:
+            return HTML(string=html, base_url=os.getcwd()).write_pdf()
+        return None
+
+    def try_playwright():
+        if 'PLAYWRIGHT_AVAILABLE' in globals() and PLAYWRIGHT_AVAILABLE:
+            try:
+                with sync_playwright() as p:
+                    browser = p.chromium.launch()
+                    page = browser.new_page()
+                    page.set_content(html, wait_until="networkidle")
+                    pdf_bytes = page.pdf(format="A4")
+                    browser.close()
+                    return pdf_bytes
+            except Exception as _e:
+                raise RuntimeError(
+                    f"Playwright failed to render PDF: {_e}. Ensure browser binaries are installed (run `playwright install`)."
+                )
+        return None
+
+    def try_api():
+        # PDFShift-compatible fallback. Set PDF_PROVIDER=api and PDFSHIFT_API_KEY in env.
+        pdfshift_key = os.getenv("PDFSHIFT_API_KEY") or os.getenv("PDF_API_KEY")
+        pdf_api_url = os.getenv("PDF_API_URL", "https://api.pdfshift.io/v3/convert/pdf")
+        if not pdfshift_key:
+            return None
         try:
-            with sync_playwright() as p:
-                browser = p.chromium.launch()
-                page = browser.new_page()
-                page.set_content(html, wait_until="networkidle")
-                pdf_bytes = page.pdf(format="A4")
-                browser.close()
-                return pdf_bytes
-        except Exception as _e:
-            raise RuntimeError(
-                f"Playwright failed to render PDF: {_e}. Ensure browser binaries are installed (run `playwright install`)."
+            resp = requests.post(
+                pdf_api_url,
+                json={"source": html},
+                auth=(pdfshift_key, "")
+            )
+            resp.raise_for_status()
+            return resp.content
+        except Exception as e:
+            raise RuntimeError(f"PDF API conversion failed: {e}")
+
+    # Auto selection order
+    if provider == "auto":
+        result = try_weasy()
+        if result:
+            return result
+        result = try_playwright()
+        if result:
+            return result
+        result = try_api()
+        if result:
+            return result
+        raise RuntimeError(
+            "PDF rendering unavailable. WeasyPrint import error: %s; Playwright import error: %s; no PDF API key configured. "
+            "Set PDF_PROVIDER=api and PDF_API_KEY (or PDFSHIFT_API_KEY), or deploy with Docker to provide native libs." % (
+                globals().get("_weasy_import_error"), globals().get("_playwright_import_error")
             )
 
-    # Neither WeasyPrint nor Playwright available — provide actionable guidance.
-    raise RuntimeError(
-        "PDF rendering unavailable. WeasyPrint import error: %s; Playwright import error: %s. "
-        "WeasyPrint requires native libs (libpango, libcairo, etc.) — consider deploying with a Docker image that installs them, "
-        "or enable Playwright and run `playwright install` in your deployment. See https://weasyprint.org/docs/install/ and https://playwright.dev/python/docs/installation for details." % (
-            globals().get("_weasy_import_error"), globals().get("_playwright_import_error")
-        )
+    if provider == "weasy":
+        res = try_weasy()
+        if res:
+            return res
+        raise RuntimeError(f"WeasyPrint not available: {globals().get('_weasy_import_error')}")
+
+    if provider == "playwright":
+        res = try_playwright()
+        if res:
+            return res
+        raise RuntimeError(f"Playwright not available: {globals().get('_playwright_import_error')}")
+
+    if provider == "api":
+        res = try_api()
+        if res:
+            return res
+        raise RuntimeError("PDF provider 'api' selected but no valid PDF API key or conversion failed.")
+
+    raise RuntimeError(f"Unknown PDF_PROVIDER: {provider}")
     )
 
 def build_context():
