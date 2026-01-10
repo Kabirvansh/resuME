@@ -689,31 +689,45 @@ def main():
         except Exception:
             inlined = html
 
-        # Build a data URL for opening the full HTML in a new tab (print/save)
+        # Build base64 of the inlined HTML so client JS can create a blob URL (avoids huge data: URLs)
         try:
-            data_url = "data:text/html;charset=utf-8;base64," + base64.b64encode(inlined.encode('utf-8')).decode('ascii')
+            inlined_b64 = base64.b64encode(inlined.encode('utf-8')).decode('ascii')
         except Exception:
-            data_url = None
+            inlined_b64 = ''
         fonts_inlined = inlined.count('data:')
 
-        # Render the inlined HTML inside the component with a Print button
+        # Render the inlined HTML inside the component with a Print button.
+        # The client script can open a blob URL from the base64 and trigger print.
         safe_html = (
             "<div style='background:#ffffff; color:#000000; padding:0; font-family:inherit;'>"
             "<div style='position:sticky; top:0; background:#ffffff; padding:10px 16px; border-bottom:1px solid #e6e6e6; text-align:right; z-index:9999;'>"
             "<button id='print-btn' style='padding:8px 12px; font-size:14px; cursor:pointer;'>Print / Save as PDF</button>"
             "<button id='open-print' style='padding:8px 12px; font-size:14px; margin-left:8px; cursor:pointer;'>Open print view</button>"
-            "</div><div id='resume-container' style='padding:20px;'>" + inlined + "</div></div>"
+            "</div><div id='resume-container' style='padding:20px;'>" + inlined + "</div>"
+            "<script>\n"
+            "(function(){\n"
+            "  try{\n"
+            "    var b64 = '" + inlined_b64 + "';\n"
+            "    var decoded = b64 ? decodeURIComponent(escape(window.atob(b64))) : '';\n"
+            "    document.getElementById('print-btn').onclick = function(){ try{ window.print(); }catch(e){alert('Print failed: '+e);} };\n"
+            "    document.getElementById('open-print').onclick = function(){\n"
+            "      if(!decoded){ alert('Nothing to open'); return; }\n"
+            "      try{ var blob = new Blob([decoded], {type:'text/html'}); var url = URL.createObjectURL(blob); var w = window.open(url,'_blank'); setTimeout(function(){ try{ w.focus(); w.print(); }catch(e){console.warn(e);} }, 500); }catch(err){ alert('Open print failed: '+err); }\n"
+            "    };\n"
+            "  }catch(err){ console.error(err);}\n"
+            "})();</script>"
+            "</div>"
         )
         try:
             st.components.v1.html(safe_html, height=850, scrolling=True)
         except Exception:
             # Fallback to raw HTML if components are unavailable
             st.markdown("<div style='white-space:pre-wrap'>" + html + "</div>", unsafe_allow_html=True)
-        # Show direct Open-in-new-tab link (user-friendly) and helper expander
-        if data_url:
-            st.markdown(f"<div><a href=\"{data_url}\" target=\"_blank\" style=\"padding:8px 12px; background:#2b2b2b; color:#fff; border-radius:6px; text-decoration:none;\">Open print view (new tab)</a></div>", unsafe_allow_html=True)
+        # Inform user that the embedded buttons can open a print view (no external data URL required)
+        if inlined_b64:
+            st.markdown("Open print view available using the buttons above.")
         else:
-            st.write("Open print view: not available (data URL generation failed)")
+            st.write("Open print view: not available (inlining failed)")
 
         with st.expander("Print & Font options"):
             st.markdown("- Click **Open print view** to open the full resume in a new tab and use your browser's Save as PDF.")
