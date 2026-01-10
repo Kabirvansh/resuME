@@ -696,10 +696,16 @@ def main():
             inlined = inline_local_fonts(html)
         except Exception:
             inlined = html
+        # Add a simple Print button (calls window.print()) so users can
+        # save the rendered HTML to PDF from their browser without API keys.
         safe_html = (
-            "<div style='background:#ffffff; color:#000000; padding:20px;'>"
+            "<div style='background:#ffffff; color:#000000; padding:0; font-family:inherit;'>"
+            "<div style='position:sticky; top:0; background:#ffffff; padding:10px 16px; border-bottom:1px solid #e6e6e6; text-align:right; z-index:9999;'>"
+            "<button onclick=\"window.print()\" style=\"padding:8px 12px; font-size:14px; cursor:pointer;\">Print / Save as PDF</button>"
+            "</div>"
+            "<div style='padding:20px;'>"
             + inlined
-            + "</div>"
+            + "</div></div>"
         )
         try:
             st.components.v1.html(safe_html, height=850, scrolling=True)
