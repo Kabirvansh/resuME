@@ -12,3 +12,8 @@ requests==2.32.4
 typing_extensions==4.14.1
 urllib3==2.5.0
 wrapt==1.17.2
+Flask==3.1.2
+Flask-CORS==6.0.1
+Jinja2==3.1.6
+WeasyPrint==65.1
+MarkupSafe==3.0.2
