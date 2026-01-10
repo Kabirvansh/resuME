@@ -683,35 +683,41 @@ def main():
 
         st.info("To enable PDF rendering, set `PDF_PROVIDER=api` with `PDF_API_KEY`, or deploy with the provided Dockerfile.")
 
-        # Inline local fonts so the preview can load repo fonts, then render inside a white container
+        # Inline local fonts so the preview can load repo fonts
         try:
             inlined = inline_local_fonts(html)
         except Exception:
             inlined = html
-        # Add a simple Print button (calls window.print()) so users can
-        # save the rendered HTML to PDF from their browser without API keys.
+
+        # Build a data URL for opening the full HTML in a new tab (print/save)
+        try:
+            data_url = "data:text/html;charset=utf-8;base64," + base64.b64encode(inlined.encode('utf-8')).decode('ascii')
+        except Exception:
+            data_url = None
+        fonts_inlined = inlined.count('data:')
+
+        # Render the inlined HTML inside the component with a Print button
         safe_html = (
             "<div style='background:#ffffff; color:#000000; padding:0; font-family:inherit;'>"
             "<div style='position:sticky; top:0; background:#ffffff; padding:10px 16px; border-bottom:1px solid #e6e6e6; text-align:right; z-index:9999;'>"
-            "<button onclick=\"window.print()\" style=\"padding:8px 12px; font-size:14px; cursor:pointer;\">Print / Save as PDF</button>"
-            "</div>"
-            "<div style='padding:20px;'>"
-            + inlined
-            + "</div></div>"
+            "<button id='print-btn' style='padding:8px 12px; font-size:14px; cursor:pointer;'>Print / Save as PDF</button>"
+            "<button id='open-print' style='padding:8px 12px; font-size:14px; margin-left:8px; cursor:pointer;'>Open print view</button>"
+            "</div><div id='resume-container' style='padding:20px;'>" + inlined + "</div></div>"
         )
         try:
             st.components.v1.html(safe_html, height=850, scrolling=True)
         except Exception:
             # Fallback to raw HTML if components are unavailable
             st.markdown("<div style='white-space:pre-wrap'>" + html + "</div>", unsafe_allow_html=True)
+        # Show direct Open-in-new-tab link (user-friendly) and helper expander
+        if data_url:
+            st.markdown(f"<div><a href=\"{data_url}\" target=\"_blank\" style=\"padding:8px 12px; background:#2b2b2b; color:#fff; border-radius:6px; text-decoration:none;\">Open print view (new tab)</a></div>", unsafe_allow_html=True)
+        else:
+            st.write("Open print view: not available (data URL generation failed)")
 
-        # Offer HTML download as fallback
-        st.download_button(
-            "Download HTML",
-            data=html,
-            file_name="resume.html",
-            mime="text/html"
-        )
+        with st.expander("Print & Font options"):
+            st.markdown("- Click **Open print view** to open the full resume in a new tab and use your browser's Save as PDF.")
+            st.write(f"Fonts inlined (approx): {fonts_inlined}")
 
 if __name__ == "__main__":
     main()
