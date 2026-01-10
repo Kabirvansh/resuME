@@ -427,11 +427,11 @@ README (first 1000 chars):
 def main():
     authenticate_user()
 
-    st.title("ResuMe Jatt Da")
+    st.title("ResuMe(Prototype)")
     job_desc = st.text_area(
         "Paste the job description here:",
         height=200,
-        placeholder="ethe paa:\n• 20% gas poori"
+        placeholder="Job Description goes here..."
     )
     # Use only session_state or manual entry for personal info
     # name  = st.text_input("Full Name",  value=st.session_state.get("name", ""))
@@ -490,7 +490,7 @@ def main():
     html = render_html(context)
     pdf_bytes = html_to_pdf_bytes(html)
 
-    st.markdown("### Theek aa sub?")
+    st.markdown("### Preview")
     b64 = base64.b64encode(pdf_bytes).decode("utf-8")
     pdf_display = f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="850"></iframe>'
     st.markdown(pdf_display, unsafe_allow_html=True)
