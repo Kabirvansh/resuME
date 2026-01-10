@@ -322,6 +322,7 @@ def html_to_pdf_bytes(html: str) -> bytes:
             "Set PDF_PROVIDER=api and PDF_API_KEY (or PDFSHIFT_API_KEY), or deploy with Docker to provide native libs." % (
                 globals().get("_weasy_import_error"), globals().get("_playwright_import_error")
             )
+        )
 
     if provider == "weasy":
         res = try_weasy()
@@ -342,7 +343,7 @@ def html_to_pdf_bytes(html: str) -> bytes:
         raise RuntimeError("PDF provider 'api' selected but no valid PDF API key or conversion failed.")
 
     raise RuntimeError(f"Unknown PDF_PROVIDER: {provider}")
-    )
+
 
 def build_context():
     context = {
