@@ -407,6 +407,60 @@ def build_context():
 
     return context
 
+
+def inline_local_fonts(html: str) -> str:
+    """Replace local font URLs (static/...) with base64 data URIs for browser previews.
+
+    This helps the Streamlit HTML preview load fonts that are stored in the repo
+    outside of a served static endpoint.
+    """
+    def _mime_for_ext(ext: str) -> str:
+        ext = ext.lower()
+        return {
+            '.ttf': 'font/ttf',
+            '.otf': 'font/otf',
+            '.woff': 'font/woff',
+            '.woff2': 'font/woff2'
+        }.get(ext, 'application/octet-stream')
+
+    import re
+    from pathlib import Path
+
+    def _replacer(match: re.Match) -> str:
+        path = match.group('path')
+        # Only inline repo-local static paths
+        if not path.startswith('static/'):
+            return match.group(0)
+        file_path = Path(os.getcwd()) / path
+        if not file_path.exists():
+            return match.group(0)
+        try:
+            data = file_path.read_bytes()
+            ext = file_path.suffix
+            b64 = base64.b64encode(data).decode('ascii')
+            mime = _mime_for_ext(ext)
+            return f"url('data:{mime};base64,{b64}')"
+        except Exception:
+            return match.group(0)
+
+    pattern = re.compile(r"url\([\'\"]?(?P<path>[^\)\'\"]+)[\'\"]?\)")
+    return pattern.sub(_replacer, html)
+
+
+def generate_pdf_via_api(html: str) -> bytes:
+    """Generate PDF by posting HTML to an external PDF API (PDFShift-compatible)."""
+    pdfshift_key = os.getenv("PDFSHIFT_API_KEY") or os.getenv("PDF_API_KEY")
+    pdf_api_url = os.getenv("PDF_API_URL", "https://api.pdfshift.io/v3/convert/pdf")
+    if not pdfshift_key:
+        raise RuntimeError("No PDF API key configured (PDFSHIFT_API_KEY or PDF_API_KEY).")
+    resp = requests.post(
+        pdf_api_url,
+        json={"source": html},
+        auth=(pdfshift_key, "")
+    )
+    resp.raise_for_status()
+    return resp.content
+
 def fetch_user_repos(user):
     repos = user.get_repos()
     projects = []
@@ -597,6 +651,23 @@ def main():
 
     context = build_context()
     html = render_html(context)
+    # Show PDF provider status and offer API generation if key present
+    pdf_api_key = os.getenv("PDFSHIFT_API_KEY") or os.getenv("PDF_API_KEY")
+    provider_env = os.getenv("PDF_PROVIDER", "auto")
+    st.markdown(f"**PDF provider:** {provider_env}  — WeasyPrint: {bool(globals().get('WEASYPRINT_AVAILABLE'))}, Playwright: {bool(globals().get('PLAYWRIGHT_AVAILABLE'))}, API key: {bool(pdf_api_key)}")
+    if pdf_api_key:
+        if st.button("Generate PDF via configured API"):
+            try:
+                pdf_bytes = generate_pdf_via_api(html)
+                b64 = base64.b64encode(pdf_bytes).decode("utf-8")
+                pdf_display = f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="850"></iframe>'
+                st.markdown("### Preview (API)")
+                st.markdown(pdf_display, unsafe_allow_html=True)
+                st.download_button("Download PDF (API)", data=pdf_bytes, file_name="resume.pdf", mime="application/pdf")
+                return
+            except Exception as api_e:
+                st.error(f"PDF API generation failed: {api_e}")
+                # fallthrough to normal generation/preview
     try:
         pdf_bytes = html_to_pdf_bytes(html)
 
@@ -620,10 +691,14 @@ def main():
 
         st.info("To enable PDF rendering, set `PDF_PROVIDER=api` with `PDF_API_KEY`, or deploy with the provided Dockerfile.")
 
-        # Render HTML inside a white container to avoid dark theme overlays
+        # Inline local fonts so the preview can load repo fonts, then render inside a white container
+        try:
+            inlined = inline_local_fonts(html)
+        except Exception:
+            inlined = html
         safe_html = (
             "<div style='background:#ffffff; color:#000000; padding:20px;'>"
-            + html
+            + inlined
             + "</div>"
         )
         try:
