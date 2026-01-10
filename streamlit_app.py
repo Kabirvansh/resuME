@@ -582,6 +582,52 @@ README (first 1000 chars):
 def main():
     authenticate_user()
 
+        # Inject mobile-responsive CSS for phones (stack sidebar, full-width inputs, responsive iframe)
+    st.markdown(
+                """
+                <style>
+                @media (max-width: 720px) {
+                    [data-testid="stSidebar"] {
+                        min-width: 100% !important;
+                        max-width: 100% !important;
+                        width: 100% !important;
+                        position: relative !important;
+                        transform: none !important;
+                    }
+                    .block-container {
+                        padding-left: 12px !important;
+                        padding-right: 12px !important;
+                        max-width: 100% !important;
+                    }
+                    [data-testid="stAppViewContainer"] {
+                        padding-left: 6px !important;
+                        padding-right: 6px !important;
+                    }
+                    .stButton>button, button {
+                        width: 100% !important;
+                        box-sizing: border-box;
+                    }
+                    input, textarea, select {
+                        width: 100% !important;
+                        box-sizing: border-box;
+                    }
+                    iframe {
+                        width: 100% !important;
+                        min-width: 100% !important;
+                    }
+                    #resume-container {
+                        overflow-x: auto;
+                        -webkit-overflow-scrolling: touch;
+                    }
+                    body {
+                        font-size: 14px !important;
+                    }
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+        )
+
     st.title("ResuMe(Prototype)")
     job_desc = st.text_area(
         "Paste the job description here:",
