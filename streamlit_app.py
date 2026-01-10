@@ -51,14 +51,6 @@ def authenticate_user():
         """,
         unsafe_allow_html=True,
     )
-
-    # --- GitHub Connector ---
-    st.sidebar.title("GitHub Connector")
-    token = st.sidebar.text_input(
-        "GitHub Personal Access Token",
-        type="password",
-        help="Create one at github.com/settings/tokens"
-    )
     if st.sidebar.button("Connect"):
         if not token:
             st.sidebar.error("Token required")
