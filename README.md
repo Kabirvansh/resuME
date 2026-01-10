@@ -218,3 +218,22 @@ This project is open source and available under the [MIT License](LICENSE).
 **Happy Resume Building!** 🎉
 
 Built with ❤️ for the dev community
+
+## Container build & CI
+
+This repository includes a `Dockerfile` that installs the native libraries required by WeasyPrint (cairo, pango, gdk-pixbuf, etc.) and Python dependencies from `requirements.txt`.
+
+- Build locally:
+
+```bash
+docker build -t resume-app .
+docker run -p 8501:8501 resume-app
+```
+
+- GitHub Actions: A workflow `.github/workflows/docker-publish.yml` is included which will build the image on push to `main` or via manual dispatch. To push the built image to Docker Hub, set these repository secrets:
+  - `DOCKERHUB_USERNAME`
+  - `DOCKERHUB_TOKEN`
+
+The workflow will tag the image as `${DOCKERHUB_USERNAME}/resume-app:latest` and `${DOCKERHUB_USERNAME}/resume-app:<sha>`.
+
+If you prefer pushing to GitHub Container Registry (GHCR) I can add a workflow variant that publishes there using `GITHUB_TOKEN`.

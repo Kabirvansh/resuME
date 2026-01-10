@@ -22,10 +22,15 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Optional: if `playwright` is present in requirements, install browsers
-RUN if python -c "import importlib,sys
-try:\n    importlib.import_module('playwright')\n    sys.exit(0)\nexcept Exception:\n    sys.exit(1)"; then \
-      playwright install --with-deps || true; \
-    true
+# If Playwright is installed via requirements, install browser binaries.
+# We run this unconditionally after pip install to ensure browsers are available.
+RUN python -c "import importlib
+try:
+    importlib.import_module('playwright')
+    print('playwright present')
+except Exception:
+    print('playwright not present')" \
+    && playwright install --with-deps || true
 
 # Copy app source
 COPY . /app
