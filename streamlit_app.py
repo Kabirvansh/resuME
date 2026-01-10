@@ -3,7 +3,22 @@ import base64
 import streamlit as st
 from github import Github, BadCredentialsException
 from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML
+try:
+    from weasyprint import HTML
+    WEASYPRINT_AVAILABLE = True
+    _weasy_import_error = None
+except Exception as _we_err:
+    HTML = None
+    WEASYPRINT_AVAILABLE = False
+    _weasy_import_error = _we_err
+try:
+    from playwright.sync_api import sync_playwright
+    PLAYWRIGHT_AVAILABLE = True
+    _playwright_import_error = None
+except Exception as _pw_err:
+    sync_playwright = None
+    PLAYWRIGHT_AVAILABLE = False
+    _playwright_import_error = _pw_err
 import openai
 import json
 import math
@@ -242,7 +257,34 @@ def render_html(context):
     return tpl.render(**context)
 
 def html_to_pdf_bytes(html: str) -> bytes:
-    return HTML(string=html, base_url=os.getcwd()).write_pdf()
+    # Prefer WeasyPrint when available (fast, pure-Python wrapper over native libs)
+    if 'WEASYPRINT_AVAILABLE' in globals() and WEASYPRINT_AVAILABLE:
+        return HTML(string=html, base_url=os.getcwd()).write_pdf()
+
+    # Fallback: try Playwright (headless Chromium). This requires the Playwright
+    # Python package and browser binaries available in the environment.
+    if 'PLAYWRIGHT_AVAILABLE' in globals() and PLAYWRIGHT_AVAILABLE:
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch()
+                page = browser.new_page()
+                page.set_content(html, wait_until="networkidle")
+                pdf_bytes = page.pdf(format="A4")
+                browser.close()
+                return pdf_bytes
+        except Exception as _e:
+            raise RuntimeError(
+                f"Playwright failed to render PDF: {_e}. Ensure browser binaries are installed (run `playwright install`)."
+            )
+
+    # Neither WeasyPrint nor Playwright available — provide actionable guidance.
+    raise RuntimeError(
+        "PDF rendering unavailable. WeasyPrint import error: %s; Playwright import error: %s. "
+        "WeasyPrint requires native libs (libpango, libcairo, etc.) — consider deploying with a Docker image that installs them, "
+        "or enable Playwright and run `playwright install` in your deployment. See https://weasyprint.org/docs/install/ and https://playwright.dev/python/docs/installation for details." % (
+            globals().get("_weasy_import_error"), globals().get("_playwright_import_error")
+        )
+    )
 
 def build_context():
     context = {
