@@ -597,19 +597,37 @@ def main():
 
     context = build_context()
     html = render_html(context)
-    pdf_bytes = html_to_pdf_bytes(html)
+    try:
+        pdf_bytes = html_to_pdf_bytes(html)
 
-    st.markdown("### Preview")
-    b64 = base64.b64encode(pdf_bytes).decode("utf-8")
-    pdf_display = f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="850"></iframe>'
-    st.markdown(pdf_display, unsafe_allow_html=True)
+        st.markdown("### Preview")
+        b64 = base64.b64encode(pdf_bytes).decode("utf-8")
+        pdf_display = f'<iframe src="data:application/pdf;base64,{b64}" width="100%" height="850"></iframe>'
+        st.markdown(pdf_display, unsafe_allow_html=True)
 
-    st.download_button(
-        "Download PDF",
-        data=pdf_bytes,
-        file_name="jatt_da_resume.pdf",
-        mime="application/pdf"
-    )
+        st.download_button(
+            "Download PDF",
+            data=pdf_bytes,
+            file_name="resume.pdf",
+            mime="application/pdf"
+        )
+    except RuntimeError as e:
+        # Graceful fallback: show helpful error, HTML preview, and allow downloading HTML
+        st.error(f"PDF generation is unavailable: {e}")
+        st.info("Displaying HTML preview. To enable PDF rendering, set `PDF_PROVIDER=api` with `PDF_API_KEY`, or deploy with the provided Dockerfile.")
+        # Show rendered HTML preview
+        try:
+            st.components.v1.html(html, height=850, scrolling=True)
+        except Exception:
+            st.markdown("<div style='white-space:pre-wrap'>" + html + "</div>", unsafe_allow_html=True)
+
+        # Offer HTML download as fallback
+        st.download_button(
+            "Download HTML",
+            data=html,
+            file_name="resume.html",
+            mime="text/html"
+        )
 
 if __name__ == "__main__":
     main()
