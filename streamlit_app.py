@@ -587,12 +587,14 @@ def main():
                 """
                 <style>
                 @media (max-width: 720px) {
+                    /* Make sidebar full-width on mobile but avoid changing stacking/positioning
+                         so Streamlit's built-in collapse/hide controls remain interactive. */
                     [data-testid="stSidebar"] {
                         min-width: 100% !important;
                         max-width: 100% !important;
                         width: 100% !important;
-                        position: relative !important;
-                        transform: none !important;
+                        z-index: 1000 !important;
+                        pointer-events: auto !important;
                     }
                     .block-container {
                         padding-left: 12px !important;
