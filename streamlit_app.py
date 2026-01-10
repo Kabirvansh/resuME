@@ -612,13 +612,24 @@ def main():
             mime="application/pdf"
         )
     except RuntimeError as e:
-        # Graceful fallback: show helpful error, HTML preview, and allow downloading HTML
-        st.error(f"PDF generation is unavailable: {e}")
-        st.info("Displaying HTML preview. To enable PDF rendering, set `PDF_PROVIDER=api` with `PDF_API_KEY`, or deploy with the provided Dockerfile.")
-        # Show rendered HTML preview
+        # Graceful fallback: show concise error and expandable details, then HTML preview
+        short_msg = "PDF generation is unavailable — showing HTML preview instead."
+        st.error(short_msg)
+        with st.expander("Show error details"):
+            st.write(str(e))
+
+        st.info("To enable PDF rendering, set `PDF_PROVIDER=api` with `PDF_API_KEY`, or deploy with the provided Dockerfile.")
+
+        # Render HTML inside a white container to avoid dark theme overlays
+        safe_html = (
+            "<div style='background:#ffffff; color:#000000; padding:20px;'>"
+            + html
+            + "</div>"
+        )
         try:
-            st.components.v1.html(html, height=850, scrolling=True)
+            st.components.v1.html(safe_html, height=850, scrolling=True)
         except Exception:
+            # Fallback to raw HTML if components are unavailable
             st.markdown("<div style='white-space:pre-wrap'>" + html + "</div>", unsafe_allow_html=True)
 
         # Offer HTML download as fallback
