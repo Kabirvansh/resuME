@@ -19,7 +19,14 @@ except Exception as _pw_err:
     sync_playwright = None
     PLAYWRIGHT_AVAILABLE = False
     _playwright_import_error = _pw_err
-import openai
+try:
+    import openai
+    OPENAI_AVAILABLE = True
+    _openai_import_error = None
+except Exception as _oi_err:
+    openai = None
+    OPENAI_AVAILABLE = False
+    _openai_import_error = _oi_err
 import json
 import math
 import re
@@ -27,7 +34,8 @@ import requests
 
 from dotenv import load_dotenv
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+if OPENAI_AVAILABLE:
+    openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def authenticate_user():
     st.markdown(
@@ -364,6 +372,10 @@ def fetch_user_repos(user):
         })
     return projects
 def rank_projects_openai(projects, job_description):
+    if not ("OPENAI_AVAILABLE" in globals() and OPENAI_AVAILABLE):
+        raise RuntimeError(
+            "OpenAI SDK not available in this environment. Install the `openai` Python package or disable OpenAI features."
+        )
     MODEL = "gpt-4o"
     print(f"Using model: {MODEL}")
 
@@ -406,6 +418,10 @@ def extract_json(text):
     return None
 
 def generate_top_project_summaries_json(projects, job_description):
+    if not ("OPENAI_AVAILABLE" in globals() and OPENAI_AVAILABLE):
+        raise RuntimeError(
+            "OpenAI SDK not available in this environment. Install the `openai` Python package or disable OpenAI features."
+        )
     MODEL = "gpt-4o"
     print(f"Using model: {MODEL} for summary generation")
 
